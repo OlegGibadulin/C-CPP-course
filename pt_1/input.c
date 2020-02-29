@@ -68,7 +68,7 @@ int input_hours_and_minutes(FILE* const file, struct tm* time) {
     ++separator;
     int min = strtol(separator, &end, 10);
 
-    if (separator == end || *end != '\0') {
+    if (separator == end || *end != '\0' || min < 0 || min > 59) {
         free(str_time);
         return 1;
     }
