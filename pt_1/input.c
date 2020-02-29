@@ -1,6 +1,6 @@
 #include "input.h"
 
-char* input_string(FILE* file) {
+char* input_string(FILE* const file) {
     int capacity = BUFFER_CAPACITY;
     char* buffer = malloc(sizeof(char) * capacity);
     if (!buffer) {
@@ -32,20 +32,50 @@ char* input_string(FILE* file) {
 }
 
 
-int input_int_number(int* num) {
-    char* str = input_string(stdin);
-    if (!str) {
+int input_int_number(FILE* const file, int* num) {
+    char* str_num = input_string(file);
+    if (!str_num || *str_num == '\0') {
         return 1;
     }
 
     char* end;
-    *num = strtol(str, &end, 10);
+    *num = strtol(str_num, &end, 10);
 
     if (*end != '\0') {
-        free(str);
+        free(str_num);
         return 1;
     }
-    free(str);
+    free(str_num);
+
+    return 0;
+}
+
+int input_hours_and_minutes(FILE* const file, struct tm* time) {
+    char* str_time = input_string(file);
+    if (!str_time || *str_time == '\0') {
+        return 1;
+    }
+
+    char* separator;
+    int hour = strtol(str_time, &separator, 10);
+
+    if (str_time == separator || *separator != TIME_SEPARATOR) {
+        free(str_time);
+        return 1;
+    }
+
+    char* end;
+    ++separator;
+    int min = strtol(separator, &end, 10);
+
+    if (separator == end || *end != '\0') {
+        free(str_time);
+        return 1;
+    }
+    free(str_time);
+
+    time->tm_hour = hour;
+    time->tm_min = min;
 
     return 0;
 }
