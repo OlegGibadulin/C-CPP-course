@@ -1,8 +1,8 @@
 #include "input.h"
 
-char* input_string(FILE* const file) {
+char* input_string(FILE* file) {
     int capacity = BUFFER_CAPACITY;
-    char* buffer = malloc(sizeof(char) * capacity);
+    char* buffer = (char*) malloc(sizeof(char) * capacity);
     if (!buffer) {
         return NULL;
     }
@@ -13,28 +13,35 @@ char* input_string(FILE* const file) {
         buffer[size++] = ch;
         if (size == capacity) {
             capacity *= 2;
-            char* tmp = realloc(buffer, sizeof(char) * capacity);
-            free(buffer);
+            char* tmp = (char*) realloc(buffer, sizeof(char) * capacity);
             if (!tmp) {
+                free(buffer);
                 return NULL;
             }
+            free(buffer);
             buffer = tmp;
         }
     }
     buffer[size++] = '\0';
 
-    buffer = realloc(buffer, sizeof(char) * size);
-    if (!buffer) {
+    char* tmp = (char*) realloc(buffer, sizeof(char) * size);
+    if (!tmp) {
+        free(buffer);
         return NULL;
     }
+    buffer = tmp;
 
     return buffer;
 }
 
 
-int input_int_number(FILE* const file, int* num) {
+int input_int_number(FILE* file, int* num) {
     char* str_num = input_string(file);
-    if (!str_num || *str_num == '\0') {
+    if (!str_num) {
+        return 1;
+    }
+    if (*str_num == '\0') {
+        free(str_num);
         return 1;
     }
 
@@ -50,16 +57,20 @@ int input_int_number(FILE* const file, int* num) {
     return 0;
 }
 
-int input_hours_and_minutes(FILE* const file, struct tm* time) {
+int input_hours_and_minutes(FILE* file, struct tm* time) {
     char* str_time = input_string(file);
-    if (!str_time || *str_time == '\0') {
+    if (!str_time) {
+        return 1;
+    }
+    if (*str_time == '\0') {
+        free(str_time);
         return 1;
     }
 
     char* separator;
     int hour = strtol(str_time, &separator, 10);
 
-    if (str_time == separator || *separator != TIME_SEPARATOR) {
+    if (str_time == separator || *separator != TIME_SEPARATOR || hour < 0) {
         free(str_time);
         return 1;
     }

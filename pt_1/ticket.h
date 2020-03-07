@@ -13,7 +13,7 @@ typedef struct tm tm;
 
 typedef struct Airport {
     char* name;
-    char code[3];
+    char code[4];
 } Airport;
 
 typedef struct Ticket {
@@ -23,13 +23,13 @@ typedef struct Ticket {
     Airport arv_airport;
 } Ticket;
 
-int create_tickets(const size_t n_tickets, Ticket*** tickets);
-void delete_tickets(const size_t n_tickets, Ticket** tickets);
+int create_tickets(const int n_tickets, Ticket*** tickets);
+void delete_tickets(const int n_tickets, Ticket** tickets);
 
-Ticket* get_optimal_price_ticket(Ticket** tickets, const size_t n_tickets,
+Ticket* get_optimal_price_ticket(Ticket** tickets, const int n_tickets,
                                 const char* dpr_code, const char* arv_code);
 
-Ticket* get_optimal_duration_ticket(Ticket** tickets, const size_t n_tickets,
+Ticket* get_optimal_duration_ticket(Ticket** tickets, const int n_tickets,
                                 const char* dpr_code, const char* arv_code);
 
 #endif /* ticket_h */
