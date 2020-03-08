@@ -1,10 +1,26 @@
-sudo: false
 language = cpp
+
+addons:
+    apt:
+        update: true
+    packages:
+        - cmake
 
 env:
     - DIR=pt_1
 
+before_install:
+    - cd /usr/src/gtest
+    - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
+    - sudo make
+    - sudo cp *.a /usr/lib
+    - cd -
+
 script:
     - cd $DIR
     - cmake .
+    - make
+    - ls
 
+after_script:
+    - make clean
