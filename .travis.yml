@@ -1,21 +1,22 @@
-language = cpp
+language: cpp
+os: linux
+compiler: gcc
 
 addons:
     apt:
-        update: true
-    packages:
-        - cmake
+        packages:
+            - cmake
 
 env:
     - DIR=pt_1
 
-before_install:
+install:
     - cd /usr/src/gtest
     - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
     - sudo make
     - sudo cp *.a /usr/lib
     - cd -
-
+    
 script:
     - cd $DIR
     - cmake .
