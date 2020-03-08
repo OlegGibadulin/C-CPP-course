@@ -1,0 +1,10 @@
+sudo: false
+language = cpp
+
+env:
+    - DIR=pt_1
+
+script:
+    - cd $DIR
+    - cmake .
+
