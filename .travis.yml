@@ -6,6 +6,8 @@ addons:
     apt:
         packages:
             - cmake
+            - valgrind
+            - libgtest-dev
 
 env:
     - DIR=pt_1
@@ -17,11 +19,15 @@ install:
     - sudo cp *.a /usr/lib
     - cd -
     
-script:
+before_script:
     - cd $DIR
     - cmake .
     - make
     - ls
+
+script:
+    - valgrind --leak-check=full -q ./main.exe < test.txt
+    - ./test.exe
 
 after_script:
     - make clean
