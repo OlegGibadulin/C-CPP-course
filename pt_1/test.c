@@ -1,8 +1,13 @@
 #include <gtest/gtest.h>
+#include <stdbool.h>
 
 #include "ticket.h"
 
 void fill_ticket(Ticket* ticket) {
+    if (!ticket) {
+        return;
+    }
+
     strcpy(ticket->dpr_airport.code, "TRT");
     strcpy(ticket->arv_airport.code, "OSL");
     ticket->fl_duration.tm_hour = 12;
@@ -11,13 +16,16 @@ void fill_ticket(Ticket* ticket) {
 }
 
 void fill_optimal_ticket(Ticket* ticket) {
+    if (!ticket) {
+        return;
+    }
+
     strcpy(ticket->dpr_airport.code, "TRT");
     strcpy(ticket->arv_airport.code, "OSL");
     ticket->fl_duration.tm_hour = 10;
     ticket->fl_duration.tm_min = 10;
     ticket->price = 900;
 }
-
 
 // create_tickets
 
@@ -56,9 +64,10 @@ TEST(get_optimal_price_ticket, neg_n) {
     const char* dpr = "TRT";
     const char* arv = "OSL";
     Ticket* optimal_ticket = get_optimal_price_ticket(tickets, -1, dpr, arv);
-    
-    ASSERT_EQ((optimal_ticket == NULL), true);
+    bool check = (optimal_ticket == NULL);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_price_ticket, neg_not_found) {
@@ -68,9 +77,10 @@ TEST(get_optimal_price_ticket, neg_not_found) {
     const char* dpr = "OSL";
     const char* arv = "TRT";
     Ticket* optimal_ticket = get_optimal_price_ticket(tickets, -1, dpr, arv);
-    
-    ASSERT_EQ((optimal_ticket == NULL), true);
+    bool check = (optimal_ticket == NULL);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_price_ticket, neg_wrong_way) {
@@ -79,9 +89,10 @@ TEST(get_optimal_price_ticket, neg_wrong_way) {
     fill_ticket(tickets[0]);
     const char* dpr = "TRT";
     Ticket* optimal_ticket = get_optimal_price_ticket(tickets, -1, dpr, dpr);
-    
-    ASSERT_EQ((optimal_ticket == NULL), true);
+    bool check = (optimal_ticket == NULL);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_price_ticket, pos_one) {
@@ -91,9 +102,10 @@ TEST(get_optimal_price_ticket, pos_one) {
     const char* dpr = "TRT";
     const char* arv = "OSL";
     Ticket* optimal_ticket = get_optimal_price_ticket(tickets, 1, dpr, arv);
-    
-    ASSERT_EQ(optimal_ticket, tickets[0]);
+    bool check = (optimal_ticket == tickets[0]);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_price_ticket, pos_two) {
@@ -104,9 +116,10 @@ TEST(get_optimal_price_ticket, pos_two) {
     const char* dpr = "TRT";
     const char* arv = "OSL";
     Ticket* optimal_ticket = get_optimal_price_ticket(tickets, 2, dpr, arv);
-    
-    ASSERT_EQ(optimal_ticket, tickets[1]);
+    bool check = (optimal_ticket == tickets[1]);
     delete_tickets(2, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 
@@ -128,9 +141,10 @@ TEST(get_optimal_duration_ticket, neg_n) {
     const char* dpr = "TRT";
     const char* arv = "OSL";
     Ticket* optimal_ticket = get_optimal_duration_ticket(tickets, -1, dpr, arv);
-    
-    ASSERT_EQ((optimal_ticket == NULL), true);
+    bool check = (optimal_ticket == NULL);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_duration_ticket, neg_not_found) {
@@ -140,9 +154,10 @@ TEST(get_optimal_duration_ticket, neg_not_found) {
     const char* dpr = "OSL";
     const char* arv = "TRT";
     Ticket* optimal_ticket = get_optimal_duration_ticket(tickets, -1, dpr, arv);
-    
-    ASSERT_EQ((optimal_ticket == NULL), true);
+    bool check = (optimal_ticket == NULL);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_duration_ticket, neg_wrong_way) {
@@ -151,9 +166,10 @@ TEST(get_optimal_duration_ticket, neg_wrong_way) {
     fill_ticket(tickets[0]);
     const char* dpr = "TRT";
     Ticket* optimal_ticket = get_optimal_duration_ticket(tickets, -1, dpr, dpr);
-    
-    ASSERT_EQ((optimal_ticket == NULL), true);
+    bool check = (optimal_ticket == NULL);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_duration_ticket, pos_one) {
@@ -163,9 +179,10 @@ TEST(get_optimal_duration_ticket, pos_one) {
     const char* dpr = "TRT";
     const char* arv = "OSL";
     Ticket* optimal_ticket = get_optimal_duration_ticket(tickets, 1, dpr, arv);
-    
-    ASSERT_EQ(optimal_ticket, tickets[0]);
+    bool check = (optimal_ticket == tickets[0]);
     delete_tickets(1, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 TEST(get_optimal_duration_ticket, pos_two) {
@@ -176,9 +193,10 @@ TEST(get_optimal_duration_ticket, pos_two) {
     const char* dpr = "TRT";
     const char* arv = "OSL";
     Ticket* optimal_ticket = get_optimal_duration_ticket(tickets, 2, dpr, arv);
-    
-    ASSERT_EQ(optimal_ticket, tickets[1]);
+    bool check = (optimal_ticket == tickets[1]);
     delete_tickets(2, tickets);
+    
+    ASSERT_EQ(check, true);
 }
 
 int main(int argc, char **argv) {

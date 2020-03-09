@@ -10,4 +10,4 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_executable(test.exe test.c ticket.c)
 target_link_libraries(test.exe ${GTEST_LIBRARIES} pthread)
 
-add_executable(main.exe main.c input.c ticket.c)
+add_executable(main.exe main.c input.c ticket.c in_out_ticket.c)

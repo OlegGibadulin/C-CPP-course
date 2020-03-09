@@ -1,6 +1,10 @@
 #include "input.h"
 
 char* input_string(FILE* file) {
+    if (!file) {
+        return NULL;
+    }
+
     int capacity = BUFFER_CAPACITY;
     char* buffer = (char*) malloc(sizeof(char) * capacity);
     if (!buffer) {
@@ -8,7 +12,7 @@ char* input_string(FILE* file) {
     }
 
     int size = 0;
-    int ch;
+    int ch = 0;
     while (((ch = fgetc(file)) != EOF) && ch != '\n') {
         buffer[size++] = ch;
         if (size == capacity) {
@@ -36,6 +40,10 @@ char* input_string(FILE* file) {
 
 
 int input_int_number(FILE* file, int* num) {
+    if (!file || !num) {
+        return 1;
+    }
+
     char* str_num = input_string(file);
     if (!str_num) {
         return 1;
@@ -45,7 +53,7 @@ int input_int_number(FILE* file, int* num) {
         return 1;
     }
 
-    char* end;
+    char* end = NULL;
     *num = strtol(str_num, &end, 10);
 
     if (*end != '\0') {
@@ -58,6 +66,10 @@ int input_int_number(FILE* file, int* num) {
 }
 
 int input_hours_and_minutes(FILE* file, struct tm* time) {
+    if (!file || !time) {
+        return 1;
+    }
+
     char* str_time = input_string(file);
     if (!str_time) {
         return 1;
@@ -67,7 +79,7 @@ int input_hours_and_minutes(FILE* file, struct tm* time) {
         return 1;
     }
 
-    char* separator;
+    char* separator = NULL;
     int hour = strtol(str_time, &separator, 10);
 
     if (str_time == separator || *separator != TIME_SEPARATOR || hour < 0) {
@@ -75,7 +87,7 @@ int input_hours_and_minutes(FILE* file, struct tm* time) {
         return 1;
     }
 
-    char* end;
+    char* end = NULL;
     ++separator;
     int min = strtol(separator, &end, 10);
 

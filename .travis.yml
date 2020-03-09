@@ -8,6 +8,7 @@ addons:
             - cmake
             - valgrind
             - libgtest-dev
+            - gcovr
 
 env:
     - DIR=pt_1
@@ -28,6 +29,7 @@ before_script:
 script:
     - valgrind --leak-check=full -q ./main.exe < test.txt
     - ./test.exe
+    - gcovr -r .
 
 after_script:
     - make clean
