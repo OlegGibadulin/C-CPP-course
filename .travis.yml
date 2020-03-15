@@ -1,0 +1,35 @@
+language: cpp
+os: linux
+compiler: gcc
+
+addons:
+    apt:
+        packages:
+            - cmake
+            - valgrind
+            - libgtest-dev
+            - gcovr
+
+env:
+    - DIR=pt_1
+
+install:
+    - cd /usr/src/gtest
+    - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
+    - sudo make
+    - sudo cp *.a /usr/lib
+    - cd -
+    
+before_script:
+    - cd $DIR
+    - cmake .
+    - make
+    - ls
+
+script:
+    - valgrind --leak-check=full -q ./main.exe < test.txt
+    - ./test.exe
+    - gcovr -r .
+
+after_script:
+    - make clean
