@@ -27,6 +27,7 @@ FileTop** create_files_top(const int files_count, const int words_count) {
             }
 
             files_top[i]->words_count = words_count;
+            files_top[i]->file_name = NULL;
         }
     }
 
@@ -35,6 +36,9 @@ FileTop** create_files_top(const int files_count, const int words_count) {
 
 void delete_files_top(FileTop** files_top, const int files_count) {
     for (int i = 0; i < files_count; ++i) {
+        if (files_top[i]->file_name) {
+            free(files_top[i]->file_name);
+        }
         free(files_top[i]->words_metrics);
         free(files_top[i]->words);
         free(files_top[i]);
@@ -49,20 +53,34 @@ void update_file_top(FileTop* file_top, const char* word,
         return;
     }
 
-    for (int i = 0; i < file_top->words_count; ++i) {
-        if (word_metrics > file_top->words_metrics[i]) {
+    char* cur_word = NULL;
+    double cur_metrics = 0;
+    int i = 0;
+
+    for (; i < file_top->words_count; ++i) {
+        if (word_metrics >= file_top->words_metrics[i]) {
+            cur_metrics = file_top->words_metrics[i];
             file_top->words_metrics[i] = word_metrics;
 
-            char* tmp = (char*) malloc(sizeof(char) * word_size);
-            if (tmp) {
-                if (file_top->words[i]) {
-                    free(file_top->words[i]);
-                }
-                strcpy(tmp, word);
-                file_top->words[i] = tmp;
+            cur_word = file_top->words[i];
+            char* new_word = (char*) malloc(sizeof(char) * word_size);
+            if (new_word) {
+                strcpy(new_word, word);
+                file_top->words[i] = new_word;
             }
 
-            return;
+            ++i;
+            break;
         }
+    }
+
+    for (; i < file_top->words_count; ++i) {
+        double tmp_m = file_top->words_metrics[i];
+        file_top->words_metrics[i] = cur_metrics;
+        cur_metrics = tmp_m;
+
+        char* tmp_w = file_top->words[i];
+        file_top->words[i] = cur_word;
+        cur_word = tmp_w;
     }
 }

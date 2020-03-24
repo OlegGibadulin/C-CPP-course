@@ -8,6 +8,7 @@ struct FileTop {
 	double* words_metrics;
     char** words;
     int words_count;
+    char* file_name;
 };
 
 FileTop** create_files_top(const int files_count, const int words_count);
