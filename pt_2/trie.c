@@ -56,7 +56,7 @@ int insert_into_trie(TrieNode** root, const char* word,
         cur_node = cur_node->children[letter_index];
     }
     cur_node->is_end_of_word = true;
-    cur_node->file_word_count = new int[file_count];
+    cur_node->file_word_count = (int*) calloc(file_count, sizeof(int));
 
     return increase_word_count(cur_node, file_index);
 }
@@ -115,7 +115,7 @@ double calc_idf_metrics(const int* word_count, const int files_count) {
 }
 
 double calc_tf_metrics(const int* word_count, const int* files_words_count, const int file_i) {
-    return word_count[file_i] / files_words_count[file_i];
+    return (double) word_count[file_i] / (double) files_words_count[file_i];
 }
 
 double calc_tf_idf_metrics(const double tf_metrics, const double idf_metrics) {
@@ -135,6 +135,9 @@ void form_top_words(FileTop** top_words, char* word, const TrieNode* root,
         double idf_metrics = calc_idf_metrics(root->file_word_count, files_count);
 
         for (int file_i = 0; file_i < files_count; ++file_i) {
+            if (root->file_word_count[file_i] == 0) {
+                continue;
+            }
             double tf_metrics = calc_tf_metrics(root->file_word_count, files_words_count, file_i);
             double tf_idf_metrics = calc_tf_idf_metrics(tf_metrics, idf_metrics);
 
