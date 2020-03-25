@@ -11,8 +11,7 @@ addons:
             - gcovr
 
 env:
-    - DIR1=pt_1
-    - DIR2=pt_2
+    - DIR=pt_2
 
 install:
     - cd /usr/src/gtest
@@ -22,7 +21,7 @@ install:
     - cd -
 
 script:
-    - cd $DIR2
+    - cd $DIR
     - cmake .
     - make
     - ls
