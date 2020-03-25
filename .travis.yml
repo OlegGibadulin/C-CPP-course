@@ -25,8 +25,8 @@ script:
     - cmake .
     - make
     - ls
-    - valgrind --leak-check=full -q ./main_l.exe
-    - valgrind --leak-check=full -q ./main_p.exe
+    - ./main_l.exe
+    - ./main_p.exe
     - ./test_l.exe
     - ./test_p.exe
     - gcovr -r .
