@@ -1,7 +1,7 @@
 #include "metrics.h"
 
-char* get_path(const char* dir_name, const char* file_name) {
-    char* path_to_file = (char*) malloc(strlen(dir_name) + strlen(file_name) + 2);
+char *get_path(const char *dir_name, const char *file_name) {
+    char *path_to_file = (char *)malloc(strlen(dir_name) + strlen(file_name) + 2);
     strcpy(path_to_file, dir_name);
     strcat(path_to_file, "/");
     strcat(path_to_file, file_name);
@@ -9,26 +9,27 @@ char* get_path(const char* dir_name, const char* file_name) {
     return path_to_file;
 }
 
-int form_trie(TrieNode** root, FILE* in_file, int* max_word_length,
-              int** files_words_count, const int files_count, const int file_i) {
+int form_trie(TrieNode **root, FILE *in_file, int *max_word_length,
+              int **files_words_count, const int files_count, const int file_i) {
     if (!in_file || !max_word_length || !*files_words_count) {
         return 1;
     }
 
-    char* word = NULL;
+    char *word = NULL;
     while ((word = get_next_word(in_file))) {
         int word_length = strlen(word);
         if (word_length > *max_word_length) {
             *max_word_length = word_length;
         }
 
-        TrieNode* searched_node = search_in_trie(*root, word);
+        TrieNode *searched_node = search_in_trie(*root, word);
         if (!searched_node) {
             if (insert_into_trie(root, word, files_count, file_i) != 0) {
                 delete_word(word);
                 return 1;
             }
-        } else {
+        }
+        else {
             if (increase_word_count(searched_node, file_i) != 0) {
                 delete_word(word);
                 return 1;
@@ -41,18 +42,18 @@ int form_trie(TrieNode** root, FILE* in_file, int* max_word_length,
     return 0;
 }
 
-TrieNode* get_trie(FileTop** files_top, int* max_word_length, int** files_words_count,
-                          const int files_count, const char* dir_name) {
+TrieNode *get_trie(FileTop **files_top, int *max_word_length, int **files_words_count,
+                   const int files_count, const char *dir_name) {
     if (!*files_top || !max_word_length || !*files_words_count || !dir_name) {
         return NULL;
     }
 
-    TrieNode* root = NULL;
-    DIR* dir = opendir(dir_name);
+    TrieNode *root = NULL;
+    DIR *dir = opendir(dir_name);
     if (!dir) {
         return NULL;
     }
-    struct dirent* entry;
+    struct dirent *entry;
 
     for (int file_i = 0; file_i < files_count; ++file_i) {
         if (!(entry = readdir(dir))) {
@@ -65,9 +66,9 @@ TrieNode* get_trie(FileTop** files_top, int* max_word_length, int** files_words_
         }
 
         files_top[file_i]->file_name = get_path(dir_name, entry->d_name);
-        FILE* in_file = fopen(files_top[file_i]->file_name, "r");
+        FILE *in_file = fopen(files_top[file_i]->file_name, "r");
         if (!in_file || form_trie(&root, in_file, max_word_length,
-            files_words_count, files_count, file_i) != 0) {
+                                  files_words_count, files_count, file_i) != 0) {
             fclose(in_file);
             closedir(dir);
             return NULL;
@@ -79,15 +80,15 @@ TrieNode* get_trie(FileTop** files_top, int* max_word_length, int** files_words_
     return root;
 }
 
-int get_top_words_by_tf_idf(FileTop** files_top, const char* dir,
+int get_top_words_by_tf_idf(FileTop **files_top, const char *dir,
                             const int files_count, const int words_count) {
     if (!files_top || !dir) {
         return 1;
     }
 
-    TrieNode* root = NULL;
+    TrieNode *root = NULL;
     int max_word_length = 0;
-    int* files_words_count = (int*) calloc(files_count, sizeof(int));
+    int *files_words_count = (int *)calloc(files_count, sizeof(int));
     if (!files_words_count) {
         return 1;
     }
@@ -98,7 +99,7 @@ int get_top_words_by_tf_idf(FileTop** files_top, const char* dir,
         return 1;
     }
 
-    char* word = (char*) malloc(sizeof(char) * max_word_length + 1);
+    char *word = (char *)malloc(sizeof(char) * max_word_length + 1);
     int letter_index = 0;
     form_top_words(files_top, word, root, letter_index, files_words_count, files_count);
 
@@ -109,7 +110,7 @@ int get_top_words_by_tf_idf(FileTop** files_top, const char* dir,
     return 0;
 }
 
-void display_files_top(FileTop** files_top, const int files_count, const int words_count) {
+void display_files_top(FileTop **files_top, const int files_count, const int words_count) {
     if (!files_top) {
         return;
     }

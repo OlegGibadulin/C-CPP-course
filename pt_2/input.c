@@ -1,12 +1,12 @@
 #include "input.h"
 
-char* get_next_word(FILE* file) {
-	if (!file) {
+char *get_next_word(FILE *file) {
+    if (!file) {
         return NULL;
     }
 
     int capacity = BUFFER_CAPACITY;
-    char* buffer = (char*) malloc(sizeof(char) * capacity);
+    char *buffer = (char *)malloc(sizeof(char) * capacity);
     if (!buffer) {
         return NULL;
     }
@@ -14,18 +14,19 @@ char* get_next_word(FILE* file) {
     int size = 0;
     int ch = 0;
     while (((ch = fgetc(file)) != EOF) && ch != '\n') {
-    	if (!isalpha(ch)) {
-    		if (size == 0) {
-    			continue;
-    		} else {
-    			break;
-    		}
-    	}
+        if (!isalpha(ch)) {
+            if (size == 0) {
+                continue;
+            }
+            else {
+                break;
+            }
+        }
 
         buffer[size++] = ch;
         if (size + 1 == capacity) {
             capacity *= 2;
-            char* tmp = (char*) realloc(buffer, sizeof(char) * capacity);
+            char *tmp = (char *)realloc(buffer, sizeof(char) * capacity);
             if (!tmp) {
                 free(buffer);
                 return NULL;
@@ -35,12 +36,12 @@ char* get_next_word(FILE* file) {
     }
 
     if (size == 0) {
-    	free(buffer);
+        free(buffer);
         return NULL;
     }
     buffer[size++] = '\0';
 
-    char* tmp = (char*) realloc(buffer, sizeof(char) * size);
+    char *tmp = (char *)realloc(buffer, sizeof(char) * size);
     if (!tmp) {
         free(buffer);
         return NULL;
@@ -50,8 +51,8 @@ char* get_next_word(FILE* file) {
     return buffer;
 }
 
-void delete_word(char* word) {
-	if (word) {
-		free(word);
-	}
+void delete_word(char *word) {
+    if (word) {
+        free(word);
+    }
 }

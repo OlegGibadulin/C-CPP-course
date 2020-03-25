@@ -8,10 +8,9 @@ addons:
             - cmake
             - valgrind
             - libgtest-dev
-            - gcovr
 
 env:
-    - DIR=pt_2
+    - DIR=pt_1
 
 install:
     - cd /usr/src/gtest
@@ -19,17 +18,16 @@ install:
     - sudo make
     - sudo cp *.a /usr/lib
     - cd -
-
-script:
+    
+before_script:
     - cd $DIR
     - cmake .
     - make
     - ls
-    - ./main_l.exe
-    - ./main_p.exe
-    - ./test_l.exe
-    - ./test_p.exe
-    - gcovr -r .
+
+script:
+    - valgrind --leak-check=full -q ./main.exe < test.txt
+    - ./test.exe
 
 after_script:
     - make clean

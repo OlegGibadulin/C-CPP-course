@@ -1,32 +1,31 @@
 #include <pthread.h>
-#include <sys/sysinfo.h>
 
 #include "trie.h"
 
 typedef struct Args {
-    FileTop** top_words;
-    char* word;
-    int* file_word_count;
+    FileTop **top_words;
+    char *word;
+    int *file_word_count;
     int letter_index;
     double idf_metrics;
-    const int* files_words_count;
+    const int *files_words_count;
 } Args;
 
 typedef struct ThreadArgs {
-    Args* args;
+    Args *args;
     int from_index;
     int to_index;
 } ThreadArgs;
 
 int get_index_from_letter(const char letter) {
-    return (int) tolower(letter) - (int) 'a';
+    return (int)tolower(letter) - (int)'a';
 }
 
 int get_letter_from_index(const int index) {
-    return index + (int) 'a';
+    return index + (int)'a';
 }
 
-int increase_word_count(TrieNode* node, const int file_index) {
+int increase_word_count(TrieNode *node, const int file_index) {
     if (!node) {
         return 1;
     }
@@ -36,8 +35,8 @@ int increase_word_count(TrieNode* node, const int file_index) {
     return 0;
 }
 
-TrieNode* create_trie_node() {
-    TrieNode* new_node = (TrieNode*) malloc (sizeof(TrieNode));
+TrieNode *create_trie_node() {
+    TrieNode *new_node = (TrieNode *)malloc(sizeof(TrieNode));
 
     if (new_node) {
         for (int i = 0; i < ALPHABET_SIZE; ++i) {
@@ -50,8 +49,8 @@ TrieNode* create_trie_node() {
     return new_node;
 }
 
-int insert_into_trie(TrieNode** root, const char* word,
-                 const int file_count, const int file_index) {
+int insert_into_trie(TrieNode **root, const char *word,
+                     const int file_count, const int file_index) {
     if (!word) {
         return 1;
     }
@@ -61,7 +60,7 @@ int insert_into_trie(TrieNode** root, const char* word,
     }
 
     int word_length = strlen(word);
-    TrieNode* cur_node = *root;
+    TrieNode *cur_node = *root;
 
     for (int i = 0; i < word_length; ++i) {
         int letter_index = get_index_from_letter(word[i]);
@@ -74,17 +73,17 @@ int insert_into_trie(TrieNode** root, const char* word,
         cur_node = cur_node->children[letter_index];
     }
     cur_node->is_end_of_word = true;
-    cur_node->file_word_count = (int*) calloc(file_count, sizeof(int));
+    cur_node->file_word_count = (int *)calloc(file_count, sizeof(int));
 
     return increase_word_count(cur_node, file_index);
 }
 
-TrieNode* search_in_trie(TrieNode* root, const char* word) {
+TrieNode *search_in_trie(TrieNode *root, const char *word) {
     if (!root || !word) {
         return NULL;
     }
 
-    TrieNode* cur_node = root;
+    TrieNode *cur_node = root;
     int word_index = 0;
     const int word_length = strlen(word);
 
@@ -97,7 +96,7 @@ TrieNode* search_in_trie(TrieNode* root, const char* word) {
     return searched ? cur_node : NULL;
 }
 
-void delete_trie(TrieNode* root) {
+void delete_trie(TrieNode *root) {
     if (!root) {
         return;
     }
@@ -115,11 +114,11 @@ void delete_trie(TrieNode* root) {
     free(root);
 }
 
-double calc_idf_metrics(const int* word_count, const int files_count) {
+double calc_idf_metrics(const int *word_count, const int files_count) {
     if (!word_count) {
         return -1;
     }
-    
+
     int files_contains_word_count = 0;
 
     for (int i = 0; i < files_count; ++i) {
@@ -128,31 +127,31 @@ double calc_idf_metrics(const int* word_count, const int files_count) {
         }
     }
 
-    return log((double) files_count / (double) files_contains_word_count);
+    return log((double)files_count / (double)files_contains_word_count);
 }
 
 double calc_tf_metrics(const int word_count, const int files_words_count) {
-    return (double) word_count / (double) files_words_count;
+    return (double)word_count / (double)files_words_count;
 }
 
 double calc_tf_idf_metrics(const double tf_metrics, const double idf_metrics) {
     return tf_metrics * idf_metrics;
 }
 
-void* form_top(void* arg) {
+void *form_top(void *arg) {
     if (!arg) {
         pthread_exit(0);
     }
-    ThreadArgs* th_args = (ThreadArgs*) arg;
+    ThreadArgs *th_args = (ThreadArgs *)arg;
     if (!th_args) {
         pthread_exit(0);
     }
-    Args* args = (Args*) th_args->args;
+    Args *args = (Args *)th_args->args;
     if (!args) {
         pthread_exit(0);
     }
-    int from_index = (int) th_args->from_index;
-    int to_index = (int) th_args->to_index;
+    int from_index = (int)th_args->from_index;
+    int to_index = (int)th_args->to_index;
 
     for (int file_i = from_index; file_i < to_index; ++file_i) {
         if (args->file_word_count[file_i] == 0) {
@@ -168,8 +167,8 @@ void* form_top(void* arg) {
     pthread_exit(0);
 }
 
-void form_top_words(FileTop** top_words, char* word, const TrieNode* root,
-                    const int letter_index, const int* files_words_count,
+void form_top_words(FileTop **top_words, char *word, const TrieNode *root,
+                    const int letter_index, const int *files_words_count,
                     const int files_count) {
     if (!root && !word) {
         return;
@@ -191,7 +190,7 @@ void form_top_words(FileTop** top_words, char* word, const TrieNode* root,
         args.files_words_count = files_words_count;
         args.idf_metrics = idf_metrics;
 
-        double threads_row_count = (double) files_count / proc_count;
+        double threads_row_count = (double)files_count / proc_count;
         if (threads_row_count < 1) {
             threads_row_count = 1;
         }

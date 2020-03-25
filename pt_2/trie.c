@@ -1,14 +1,14 @@
 #include "trie.h"
 
 int get_index_from_letter(const char letter) {
-    return (int) tolower(letter) - (int) 'a';
+    return (int)tolower(letter) - (int)'a';
 }
 
 int get_letter_from_index(const int index) {
-    return index + (int) 'a';
+    return index + (int)'a';
 }
 
-int increase_word_count(TrieNode* node, const int file_index) {
+int increase_word_count(TrieNode *node, const int file_index) {
     if (!node) {
         return 1;
     }
@@ -18,8 +18,8 @@ int increase_word_count(TrieNode* node, const int file_index) {
     return 0;
 }
 
-TrieNode* create_trie_node() {
-    TrieNode* new_node = (TrieNode*) malloc (sizeof(TrieNode));
+TrieNode *create_trie_node() {
+    TrieNode *new_node = (TrieNode *)malloc(sizeof(TrieNode));
 
     if (new_node) {
         for (int i = 0; i < ALPHABET_SIZE; ++i) {
@@ -32,8 +32,8 @@ TrieNode* create_trie_node() {
     return new_node;
 }
 
-int insert_into_trie(TrieNode** root, const char* word,
-                 const int file_count, const int file_index) {
+int insert_into_trie(TrieNode **root, const char *word,
+                     const int file_count, const int file_index) {
     if (!word) {
         return 1;
     }
@@ -43,7 +43,7 @@ int insert_into_trie(TrieNode** root, const char* word,
     }
 
     int word_length = strlen(word);
-    TrieNode* cur_node = *root;
+    TrieNode *cur_node = *root;
 
     for (int i = 0; i < word_length; ++i) {
         int letter_index = get_index_from_letter(word[i]);
@@ -56,17 +56,17 @@ int insert_into_trie(TrieNode** root, const char* word,
         cur_node = cur_node->children[letter_index];
     }
     cur_node->is_end_of_word = true;
-    cur_node->file_word_count = (int*) calloc(file_count, sizeof(int));
+    cur_node->file_word_count = (int *)calloc(file_count, sizeof(int));
 
     return increase_word_count(cur_node, file_index);
 }
 
-TrieNode* search_in_trie(TrieNode* root, const char* word) {
+TrieNode *search_in_trie(TrieNode *root, const char *word) {
     if (!root || !word) {
         return NULL;
     }
 
-    TrieNode* cur_node = root;
+    TrieNode *cur_node = root;
     int word_index = 0;
     const int word_length = strlen(word);
 
@@ -79,7 +79,7 @@ TrieNode* search_in_trie(TrieNode* root, const char* word) {
     return searched ? cur_node : NULL;
 }
 
-void delete_trie(TrieNode* root) {
+void delete_trie(TrieNode *root) {
     if (!root) {
         return;
     }
@@ -97,11 +97,11 @@ void delete_trie(TrieNode* root) {
     free(root);
 }
 
-double calc_idf_metrics(const int* word_count, const int files_count) {
+double calc_idf_metrics(const int *word_count, const int files_count) {
     if (!word_count) {
         return -1;
     }
-    
+
     int files_contains_word_count = 0;
 
     for (int i = 0; i < files_count; ++i) {
@@ -110,19 +110,19 @@ double calc_idf_metrics(const int* word_count, const int files_count) {
         }
     }
 
-    return log((double) files_count / (double) files_contains_word_count);
+    return log((double)files_count / (double)files_contains_word_count);
 }
 
 double calc_tf_metrics(const int word_count, const int files_words_count) {
-    return (double) word_count / (double) files_words_count;
+    return (double)word_count / (double)files_words_count;
 }
 
 double calc_tf_idf_metrics(const double tf_metrics, const double idf_metrics) {
     return tf_metrics * idf_metrics;
 }
 
-void form_top_words(FileTop** top_words, char* word, const TrieNode* root,
-                    const int letter_index, const int* files_words_count,
+void form_top_words(FileTop **top_words, char *word, const TrieNode *root,
+                    const int letter_index, const int *files_words_count,
                     const int files_count) {
     if (!root && !word) {
         return;

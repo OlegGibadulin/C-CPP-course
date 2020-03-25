@@ -9,8 +9,8 @@
 
 #define BUFFER_CAPACITY 10
 
-char* get_next_word(FILE* file);
+char *get_next_word(FILE *file);
 
-void delete_word(char* word);
+void delete_word(char *word);
 
 #endif /* input_h */
