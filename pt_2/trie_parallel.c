@@ -19,7 +19,7 @@ typedef struct ThreadArgs {
 } ThreadArgs;
 
 int get_index_from_letter(const char letter) {
-    return (int) letter - (int) 'a';
+    return (int) tolower(letter) - (int) 'a';
 }
 
 int get_letter_from_index(const int index) {
