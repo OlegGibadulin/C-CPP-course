@@ -30,7 +30,7 @@ script:
     - ./test.exe
     - gcovr -r .
     
-    - cd ..
+    - cd -
     - cd $DIR2
     - cmake .
     - make
