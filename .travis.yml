@@ -11,7 +11,8 @@ addons:
             - gcovr
 
 env:
-    - DIR=pt_1
+    - DIR1=pt_1
+    - DIR2=pt_2
 
 install:
     - cd /usr/src/gtest
@@ -19,16 +20,25 @@ install:
     - sudo make
     - sudo cp *.a /usr/lib
     - cd -
-    
-before_script:
-    - cd $DIR
+
+script:
+    - cd $DIR1
     - cmake .
     - make
     - ls
-
-script:
     - valgrind --leak-check=full -q ./main.exe < test.txt
     - ./test.exe
+    - gcovr -r .
+    
+    - cd ..
+    - cd $DIR2
+    - cmake .
+    - make
+    - ls
+    - valgrind --leak-check=full -q ./main_l.exe
+    - valgrind --leak-check=full -q ./main_p.exe
+    - ./test_l.exe
+    - ./test_p.exe
     - gcovr -r .
 
 after_script:
