@@ -116,6 +116,10 @@ void delete_trie(TrieNode* root) {
 }
 
 double calc_idf_metrics(const int* word_count, const int files_count) {
+    if (!word_count) {
+        return -1;
+    }
+    
     int files_contains_word_count = 0;
 
     for (int i = 0; i < files_count; ++i) {

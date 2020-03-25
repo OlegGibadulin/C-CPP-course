@@ -18,6 +18,8 @@ struct TrieNode {
     bool is_end_of_word;
 };
 
+TrieNode* create_trie_node();
+
 int increase_word_count(TrieNode* node, const int file_index);
 
 int insert_into_trie(TrieNode** root, const char* word,
