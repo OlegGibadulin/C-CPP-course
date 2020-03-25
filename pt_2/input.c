@@ -14,7 +14,7 @@ char* get_next_word(FILE* file) {
     int size = 0;
     int ch = 0;
     while (((ch = fgetc(file)) != EOF) && ch != '\n') {
-    	if (ch == ' ') {
+    	if (!isalpha(ch)) {
     		if (size == 0) {
     			continue;
     		} else {

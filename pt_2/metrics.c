@@ -98,10 +98,11 @@ int get_top_words_by_tf_idf(FileTop** files_top, const char* dir,
         return 1;
     }
 
-    char word[max_word_length + 1];
+    char* word = (char*) malloc(sizeof(char) * max_word_length + 1);
     int letter_index = 0;
     form_top_words(files_top, word, root, letter_index, files_words_count, files_count);
 
+    free(word);
     delete_trie(root);
     free(files_words_count);
 
@@ -118,7 +119,9 @@ void display_files_top(FileTop** files_top, const int files_count, const int wor
             printf("File %s\n", files_top[i]->file_name);
 
             for (int j = 0; j < words_count; ++j) {
-                printf("%s\n", files_top[i]->words[j]);
+                if (files_top[i]->words[j]) {
+                    printf("%s\n", files_top[i]->words[j]);
+                }
             }
             printf("\n");
         }

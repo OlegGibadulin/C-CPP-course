@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #define BUFFER_CAPACITY 10
 
