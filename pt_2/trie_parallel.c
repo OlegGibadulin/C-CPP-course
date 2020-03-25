@@ -85,21 +85,16 @@ TrieNode* search_in_trie(TrieNode* root, const char* word) {
     }
 
     TrieNode* cur_node = root;
-    TrieNode* prev_node = NULL;
-    int node_count = -1;
     int word_index = 0;
+    const int word_length = strlen(word);
 
-    while (cur_node) {
+    while (cur_node && word_index < word_length) {
         int letter_index = get_index_from_letter(word[word_index++]);
-        prev_node = cur_node;
         cur_node = cur_node->children[letter_index];
-        ++node_count;
     }
+    bool searched = (cur_node && cur_node->is_end_of_word && word_index == word_length);
 
-    int word_length = strlen(word);
-    bool searched = (prev_node->is_end_of_word && node_count == word_length);
-
-    return searched ? prev_node : NULL;
+    return searched ? cur_node : NULL;
 }
 
 void delete_trie(TrieNode* root) {
@@ -209,6 +204,8 @@ void form_top_words(FileTop** top_words, char* word, const TrieNode* root,
 
         for (int i = 0; i < proc_count; ++i) {
             pthread_create(&threads[i], NULL, form_top, &threads_args[i]);
+        }
+        for (int i = 0; i < proc_count; ++i) {
             pthread_join(threads[i], NULL);
         }
     }

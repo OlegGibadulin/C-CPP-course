@@ -67,21 +67,16 @@ TrieNode* search_in_trie(TrieNode* root, const char* word) {
     }
 
     TrieNode* cur_node = root;
-    TrieNode* prev_node = NULL;
-    int node_count = -1;
     int word_index = 0;
+    const int word_length = strlen(word);
 
-    while (cur_node) {
+    while (cur_node && word_index < word_length) {
         int letter_index = get_index_from_letter(word[word_index++]);
-        prev_node = cur_node;
         cur_node = cur_node->children[letter_index];
-        ++node_count;
     }
+    bool searched = (cur_node && cur_node->is_end_of_word && word_index == word_length);
 
-    int word_length = strlen(word);
-    bool searched = (prev_node->is_end_of_word && node_count == word_length);
-
-    return searched ? prev_node : NULL;
+    return searched ? cur_node : NULL;
 }
 
 void delete_trie(TrieNode* root) {
@@ -114,8 +109,8 @@ double calc_idf_metrics(const int* word_count, const int files_count) {
     return log((double) files_count / (double) files_contains_word_count);
 }
 
-double calc_tf_metrics(const int* word_count, const int* files_words_count, const int file_i) {
-    return (double) word_count[file_i] / (double) files_words_count[file_i];
+double calc_tf_metrics(const int word_count, const int files_words_count) {
+    return (double) word_count / (double) files_words_count;
 }
 
 double calc_tf_idf_metrics(const double tf_metrics, const double idf_metrics) {
@@ -138,7 +133,8 @@ void form_top_words(FileTop** top_words, char* word, const TrieNode* root,
             if (root->file_word_count[file_i] == 0) {
                 continue;
             }
-            double tf_metrics = calc_tf_metrics(root->file_word_count, files_words_count, file_i);
+            double tf_metrics = calc_tf_metrics(root->file_word_count[file_i],
+                                                files_words_count[file_i]);
             double tf_idf_metrics = calc_tf_idf_metrics(tf_metrics, idf_metrics);
 
             update_file_top(top_words[file_i], word, letter_index, tf_idf_metrics);
@@ -153,5 +149,3 @@ void form_top_words(FileTop** top_words, char* word, const TrieNode* root,
         }
     }
 }
-
-
