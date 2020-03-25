@@ -22,15 +22,6 @@ install:
     - cd -
 
 script:
-    - cd $DIR1
-    - cmake .
-    - make
-    - ls
-    - valgrind --leak-check=full -q ./main.exe < test.txt
-    - ./test.exe
-    - gcovr -r .
-    
-    - cd -
     - cd $DIR2
     - cmake .
     - make
